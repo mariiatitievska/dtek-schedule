@@ -2,7 +2,7 @@ name: Run schedule group 2
 
 on:
   schedule:
-    - cron: "0 * * * *"
+    - cron: "5 * * * *"
   workflow_dispatch:
   repository_dispatch:
     types: [check-schedule-2]
@@ -35,13 +35,13 @@ jobs:
 
       - name: Checkout artifacts
         run: |
-          REMOTE_BRANCH=$(git ls-remote --heads origin artifacts)
+          REMOTE_BRANCH=$(git ls-remote --heads origin artifacts-2)
 
           if [ -n "$REMOTE_BRANCH" ]; then
-            git fetch --depth 1 origin artifacts
+            git fetch --depth 1 origin artifacts-2
             git worktree add --detach artifacts FETCH_HEAD
           else
-            git worktree add --orphan -b artifacts artifacts
+            git worktree add --orphan -b artifacts-2 artifacts
           fi
 
       - name: Set up Node.js
@@ -88,10 +88,10 @@ jobs:
             git -C artifacts commit -m "chore: update artifacts"
           fi
 
-          git push --force origin "$(git -C artifacts rev-parse HEAD):refs/heads/artifacts"
+          git push --force origin "$(git -C artifacts rev-parse HEAD):refs/heads/artifacts-2"
 
       - name: Keep workflow enabled
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh api --method PUT "repos/$GITHUB_REPOSITORY/actions/workflows/schedule.yml/enable"
+        run: gh api --method PUT "repos/$GITHUB_REPOSITORY/actions/workflows/schedule-group2.yml/enable"
