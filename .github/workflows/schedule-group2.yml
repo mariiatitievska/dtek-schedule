@@ -1,8 +1,6 @@
 name: Run schedule group 2
 
 on:
-  schedule:
-    - cron: "5 * * * *"
   workflow_dispatch:
   repository_dispatch:
     types: [check-schedule-2]
